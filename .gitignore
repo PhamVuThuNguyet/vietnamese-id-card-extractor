@@ -1,0 +1,10 @@
+.DS_Store
+__pycache__/
+.idea/
+include
+Lib
+Scripts
+share
+sources/Database/uploads
+sources/static/results
+sources/static/face
