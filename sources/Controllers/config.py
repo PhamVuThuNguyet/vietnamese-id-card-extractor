@@ -8,8 +8,6 @@ IOU_CORNER_THRESHOLD = 0.5
 
 CORNER_MODEL_PATH = "sources/Database/OCR/weights/corner.pt"
 CONTENT_MODEL_PATH = "sources/Database/OCR/weights/content.pt"
-FACE_MODEL_PATH = "sources/Database/OCR/weights/face.pt"
-
 OCR_MODEL_PATH = "sources/Database/OCR/weights/seq2seq.pth"
 
 DEVICE = "cpu"  # or "cuda:0" if using GPU
@@ -17,4 +15,8 @@ DEVICE = "cpu"  # or "cuda:0" if using GPU
 # Config directory
 UPLOAD_FOLDER = 'sources/Database/uploads'
 SAVE_DIR = 'sources/static/results'
-FACE_DIR = 'sources/static/face'
+
+# Amazon Rekognition Config
+COLLECTION_ID = "FaceDBSmartLock"
+ACCESS_KEY_ID = "AKIAYJAR3NBVW27IY46R"
+SECRET_ACCESS_ID = "BVf+fI9H3K0ReCkS+ZLOafk2uKZO+g6nwltDATM0"

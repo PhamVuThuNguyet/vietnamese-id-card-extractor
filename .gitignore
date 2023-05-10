@@ -5,6 +5,6 @@ include
 Lib
 Scripts
 share
-sources/Database/uploads
+sources/Database/uploads/*
 sources/static/results
 sources/static/face

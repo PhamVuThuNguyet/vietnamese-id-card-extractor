@@ -1,12 +1,20 @@
-from sqlalchemy import Column, Integer, String, DateTime
-from .database import Base
 import datetime as dt
 
+from sqlalchemy import Column, Integer, String, Date, DateTime
 
-class Feedback(Base):
-    __tablename__ = "feedbacks"
+from .database import Base
 
-    id = Column(Integer, primary_key=True, index=True)
-    content = Column(String)
-    rating = Column(Integer)
-    post_date = Column(DateTime, default=dt.datetime.now)
+
+class Client(Base):
+    __tablename__ = "clients"
+
+    id = Column(String, primary_key=True, unique=True)
+    image = Column(String, nullable=False)
+    name = Column(String, nullable=False)
+    dob = Column(Date, nullable=False)
+    sex = Column(Integer, nullable=False)
+    nationality = Column(String, nullable=False)
+    poo = Column(String, nullable=False)
+    por = Column(String, nullable=False)
+    doe = Column(Date, nullable=False)
+    created_on = Column(DateTime, default=dt.datetime.now)

@@ -1,8 +1,8 @@
-import numpy as np
 import cv2
+import numpy as np
 
 
-def class_Order(boxes, categories):
+def class_order(boxes, categories):
     Z = []
     cate = np.argsort(categories)
     for index in cate:
