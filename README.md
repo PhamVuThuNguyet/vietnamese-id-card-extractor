@@ -14,6 +14,7 @@ to reduce human typing workload and saves more time.
 ## **Installation**
 
 > **Warning**
+>
 > Enabling virtualenv is recommended
 
 All requirement libraries are listed in requirements.txt. You can install it by using:
@@ -32,12 +33,6 @@ pip install -r requirements.txt
 - Replace your access_key_id and secret_access_key in the sources/Controllers/config.py file
 - Run ```python sources/Controllers/create_collection```
 
-``` python
-python run.py
-```
+- Run the main file ``` python run.py ```
 
-Go to
-
-```
-localhost:8080/
-```
+- Go to ```localhost:8080``` and enjoy! ( •̀ ω •́ )✧
