@@ -7,16 +7,16 @@ let input = dropArea.querySelector('input');
 let file;
 let dataExtracted;
 
-let menu_btn =  document.querySelector("#menu-btn");
+let menu_btn = document.querySelector("#menu-btn");
 let sidebar = document.querySelector(".sidebar");
 let search_btn = document.querySelector(".bx-search-alt-2");
 let imgForm = document.querySelector(".get_img");
 
-menu_btn.onclick = function(){
+menu_btn.onclick = function () {
   sidebar.classList.toggle("active");
 }
 
-search_btn.onclick = function(){
+search_btn.onclick = function () {
   sidebar.classList.toggle("active");
 }
 
@@ -64,13 +64,13 @@ dropArea.addEventListener('drop', (event) => {
 
 
 const xhr = new XMLHttpRequest();
-xhr.onreadystatechange = function(e) {
+xhr.onreadystatechange = function (e) {
   e.preventDefault();
 
   if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
     loading_off();
     const data = JSON.parse(xhr.responseText).data;
-    const update =  new Date();
+    const update = new Date();
     document.querySelector('.person__img').innerHTML = `<img src="/static/results/0.jpg?v=${update.getTime()}" />`; // To update avoid using image from cache
     document.querySelector('.info__id').innerHTML = `Số (ID): ${data[0]}`;
     document.querySelector('.info__name').innerHTML = `Họ và tên (Full name): ${data[1]}`;
@@ -97,7 +97,7 @@ xhr.onreadystatechange = function(e) {
       footer: `CODE: ${xhr.status}`
     })
   }
-  else if (xhr.status >= 400 && xhr.status <= 500){
+  else if (xhr.status >= 400 && xhr.status <= 500) {
     const data = JSON.parse(xhr.responseText);
     loading_off();
     Swal.fire({
@@ -107,10 +107,10 @@ xhr.onreadystatechange = function(e) {
       footer: `CODE: ${xhr.status}`
     })
   }
-  else if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 201){
-    downloadCSV({ 
-            filename: "user_data.csv"
-          });
+  else if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 201) {
+    downloadCSV({
+      filename: "user_data.csv"
+    });
     const downloadSuccess = Swal.mixin({
       toast: true,
       position: 'top-end',
@@ -118,7 +118,7 @@ xhr.onreadystatechange = function(e) {
       timer: 3000,
       timerProgressBar: true,
     })
-  
+
     downloadSuccess.fire({
       icon: 'success',
       title: 'Download extracted data successfully!'
@@ -126,8 +126,8 @@ xhr.onreadystatechange = function(e) {
   }
 }
 
-function file_validation(){
-  if (file == 'wrong_exts'){
+function file_validation() {
+  if (file == 'wrong_exts') {
     const URL = '/uploader';
     const formData = new FormData();
     var f = new File([""], "WRONG_EXTS"); // Empty file trick
@@ -137,16 +137,16 @@ function file_validation(){
   }
 }
 
-imgForm.addEventListener("submit", function(e) {
+imgForm.addEventListener("submit", function (e) {
   e.preventDefault();
   const formData = new FormData();
   loading_on();
 
-  if (file == null){
+  if (file == null) {
     var f = new File([""], "NULL"); // Empty file trick
     formData.append('file', f);
   }
-  else{
+  else {
     formData.append('file', file);
   }
   const URL = '/uploader';
@@ -154,7 +154,7 @@ imgForm.addEventListener("submit", function(e) {
   xhr.send(formData);
 });
 
-convertArrayOfObjectsToCSV = args => {  
+convertArrayOfObjectsToCSV = args => {
   const data = args.data;
   if (!data || !data.length) return;
 
@@ -180,7 +180,7 @@ convertArrayOfObjectsToCSV = args => {
   return result;
 }
 
-function downloadExtracted(){
+function downloadExtracted() {
   const URL = '/download';
   const formData = new FormData();
   formData.append('file', dataExtracted);
@@ -226,7 +226,7 @@ function displayFile() {
   } else {
     dropArea.classList.remove('active');
     file = 'wrong_exts';
-    file_validation(); 
+    file_validation();
     file = null;
   }
 }
