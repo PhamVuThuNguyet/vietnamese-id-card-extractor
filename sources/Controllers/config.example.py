@@ -18,5 +18,5 @@ SAVE_DIR = 'sources/static/results'
 
 # Amazon Rekognition Config
 COLLECTION_ID = "FaceDBSmartLock"
-ACCESS_KEY_ID = "AKIAYJAR3NBVW27IY46R"
-SECRET_ACCESS_ID = "BVf+fI9H3K0ReCkS+ZLOafk2uKZO+g6nwltDATM0"
+ACCESS_KEY_ID = "Your-Key-Here"
+SECRET_ACCESS_ID = "Your-Secret-Here"
