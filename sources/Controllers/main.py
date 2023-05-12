@@ -172,7 +172,8 @@ async def extract_info(ekyc=False, path_id=None):
         detected_fields = detected_fields[:6] + [detected_fields[6] + ', ' + detected_fields[7]] + [detected_fields[8]]
 
     face_img_path = os.path.join(SAVE_DIR, f'0.jpg')
-    if rekognition.check_existed_face(face_img_path):
+
+    if rekognition.check_existed_face(face_img_path) != None:
         print("EXISTED FACE!")
     else:
         face_id = rekognition.add_face_to_collection(face_img_path)

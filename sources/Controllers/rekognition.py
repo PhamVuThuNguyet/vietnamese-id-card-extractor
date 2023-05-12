@@ -28,9 +28,9 @@ def check_existed_face(image_path):
 
     # Check the search results
     if len(response['FaceMatches']) > 0:
-        return True
+        return response['FaceMatches'][0]['Face']['FaceId']
     else:
-        return False
+        return None
 
 
 def add_face_to_collection(image_path):
@@ -45,3 +45,17 @@ def add_face_to_collection(image_path):
         Image={'Bytes': search_image}
     )
     return response["FaceRecords"][0]["Face"]["FaceId"]
+
+
+def delete_face_from_collection(face_id):
+    client = create_boto_client('rekognition')
+
+    response = client.delete_faces(
+        CollectionId=COLLECTION_ID,
+        FaceIds=[face_id]
+    )
+
+    if len(response["DeletedFaces"]) > 0:
+        return True
+    else:
+        return False

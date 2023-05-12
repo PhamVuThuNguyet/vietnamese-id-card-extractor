@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from sources.Models.database import SessionLocal
-from sources.Models.models import Client
+from sources.Models.models import Client, Booking
 
 
 def add_record_to_db(detected_fields, face_id):
@@ -21,3 +21,19 @@ def add_record_to_db(detected_fields, face_id):
     db.commit()
 
     db.close()
+
+
+def query_valid_booking(room):
+    db = SessionLocal()
+    timestamp = datetime.now()
+    valid_bookings = db.query(Booking).filter(Booking.time_in <= timestamp,
+                                              Booking.time_out >= timestamp,
+                                              Booking.room == room).all()
+
+    client_ids = [booking.client_id for booking in valid_bookings]
+
+    clients = db.query(Client).filter(Client.id.in_(client_ids)).all()
+
+    db.close()
+
+    return clients[0].image
