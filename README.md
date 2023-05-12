@@ -30,7 +30,8 @@ pip install -r requirements.txt
 - Once the user has been created, create and retrieve the keys used to authenticate the user. (
   Read <a href = "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey">
   this</a>)
-- Replace your access_key_id and secret_access_key in the sources/Controllers/config.py file
+- Create ```sources/Controllers/config.py``` file and copy all values from ```sources/Controllers/config.exampe.py``` to it
+- Replace your access_key_id and secret_access_key in the new config file
 - Run ```python sources/Controllers/create_collection```
 
 - Run the main file ``` python run.py ```
