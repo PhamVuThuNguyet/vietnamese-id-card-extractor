@@ -1,3 +1,4 @@
+import base64
 import os
 
 import databases
@@ -196,3 +197,16 @@ async def download(file: str = Form(...)):
     else:
         error = 'No file to download!'
         return JSONResponse(status_code=405, content={"message": error})
+
+
+@app.post("/capture-and-compare")
+async def capture_and_compare(image: str = Form(...)):
+    with open(os.path.join(SAVE_DIR, 'temp.jpg'), "wb") as file:
+        decoded_image = base64.b64decode(image)
+        file.write(decoded_image)
+
+    face_id = rekognition.check_existed_face(os.path.join(SAVE_DIR, 'temp.jpg'))
+
+    valid_face_id = database_management.query_valid_booking("A101")
+
+    print(face_id == valid_face_id)
