@@ -9,3 +9,4 @@ sources/Database/uploads/*
 sources/static/results
 sources/static/face
 sources/Controllers/config.py
+pyvenv.cfg

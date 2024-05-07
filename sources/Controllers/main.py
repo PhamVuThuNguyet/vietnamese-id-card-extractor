@@ -3,18 +3,19 @@ import os
 
 import databases
 import numpy as np
-import sources.Controllers.config as cfg
 import yolov5
-from PIL import Image
-from fastapi import Request, UploadFile, File, Form
+from fastapi import File, Form, Request, UploadFile
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
-from sources import app, templates
-from sources.Controllers import utils, rekognition, database_management
-from sources.Models import models
-from sources.Models.database import engine, SQLALCHEMY_DATABASE_URL
+from PIL import Image
 from vietocr.tool.config import Cfg
 from vietocr.tool.predictor import Predictor
+
+import sources.Controllers.config as cfg
+from sources import app, templates
+from sources.Controllers import database_management, rekognition, utils
+from sources.Models import models
+from sources.Models.database import SQLALCHEMY_DATABASE_URL, engine
 
 """ ---- Setup ---- """
 # Init Database
@@ -50,11 +51,13 @@ UPLOAD_FOLDER = cfg.UPLOAD_FOLDER
 SAVE_DIR = cfg.SAVE_DIR
 
 """ Recognizion detected parts in ID """
-config = Cfg.load_config_from_name('vgg_seq2seq')  # OR vgg_transformer -> acc || vgg_seq2seq -> time
-config['weights'] = cfg.OCR_MODEL_PATH
-config['cnn']['pretrained'] = False
-config['device'] = cfg.DEVICE
-config['predictor']['beamsearch'] = False
+config = Cfg.load_config_from_name(
+    "vgg_seq2seq"
+)  # OR vgg_transformer -> acc || vgg_seq2seq -> time
+config["weights"] = cfg.OCR_MODEL_PATH
+config["cnn"]["pretrained"] = False
+config["device"] = cfg.DEVICE
+config["predictor"]["beamsearch"] = False
 detector = Predictor(config)
 
 
@@ -82,16 +85,16 @@ async def upload(file: UploadFile = File(...)):
 
     file_location = f"./{UPLOAD_FOLDER}/{file.filename}"
     contents = await file.read()
-    with open(file_location, 'wb') as f:
+    with open(file_location, "wb") as f:
         f.write(contents)
 
     # Validating file
     input_file = os.listdir(UPLOAD_FOLDER)[0]
-    if input_file == 'NULL':
+    if input_file == "NULL":
         os.remove(os.path.join(UPLOAD_FOLDER, input_file))
         error = "No file selected!"
         return JSONResponse(status_code=403, content={"message": error})
-    elif input_file == 'WRONG_EXTS':
+    elif input_file == "WRONG_EXTS":
         os.remove(os.path.join(UPLOAD_FOLDER, input_file))
         error = "This file is not supported!"
         return JSONResponse(status_code=404, content={"message": error})
@@ -101,9 +104,9 @@ async def upload(file: UploadFile = File(...)):
 
 @app.post("/extract")
 async def extract_info(ekyc=False, path_id=None):
-    """ Check if uploaded image exist """
+    """Check if uploaded image exist"""
     if not os.path.isdir(UPLOAD_FOLDER):
-        os.mkdir(UPLOAD_FOLDER)
+        os.makedirs(UPLOAD_FOLDER)
 
     input_images_list = os.listdir(UPLOAD_FOLDER)
     if input_images_list is not None:
@@ -150,7 +153,7 @@ async def extract_info(ekyc=False, path_id=None):
     boxes, categories = utils.non_max_suppression_fast(np.array(boxes), categories, 0.7)
     boxes = utils.class_order(boxes, categories)  # x1, x2, y1, y2
     if not os.path.isdir(SAVE_DIR):
-        os.mkdir(SAVE_DIR)
+        os.makedirs(SAVE_DIR)
     else:
         for f in os.listdir(SAVE_DIR):
             os.remove(os.path.join(SAVE_DIR, f))
@@ -160,7 +163,7 @@ async def extract_info(ekyc=False, path_id=None):
         if 5 < index < 9:
             right = right + 100
         cropped_image = aligned.crop((left, top, right, bottom))
-        cropped_image.save(os.path.join(SAVE_DIR, f'{index}.jpg'))
+        cropped_image.save(os.path.join(SAVE_DIR, f"{index}.jpg"))
 
     detected_fields = []  # Collecting all detected parts
     for idx, img_crop in enumerate(sorted(os.listdir(SAVE_DIR))):
@@ -170,9 +173,13 @@ async def extract_info(ekyc=False, path_id=None):
             detected_fields.append(s)
 
     if 7 in categories:
-        detected_fields = detected_fields[:6] + [detected_fields[6] + ', ' + detected_fields[7]] + [detected_fields[8]]
+        detected_fields = (
+            detected_fields[:6]
+            + [detected_fields[6] + ", " + detected_fields[7]]
+            + [detected_fields[8]]
+        )
 
-    face_img_path = os.path.join(SAVE_DIR, f'0.jpg')
+    face_img_path = os.path.join(SAVE_DIR, f"0.jpg")
 
     if rekognition.check_existed_face(face_img_path) != None:
         print("EXISTED FACE!")
@@ -180,9 +187,7 @@ async def extract_info(ekyc=False, path_id=None):
         face_id = rekognition.add_face_to_collection(face_img_path)
         database_management.add_record_to_db(detected_fields, face_id)
 
-    response = {
-        "data": detected_fields
-    }
+    response = {"data": detected_fields}
 
     response = jsonable_encoder(response)
 
@@ -191,21 +196,21 @@ async def extract_info(ekyc=False, path_id=None):
 
 @app.post("/download")
 async def download(file: str = Form(...)):
-    if file != 'undefined':
-        noti = 'Download file successfully!'
+    if file != "undefined":
+        noti = "Download file successfully!"
         return JSONResponse(status_code=201, content={"message": noti})
     else:
-        error = 'No file to download!'
+        error = "No file to download!"
         return JSONResponse(status_code=405, content={"message": error})
 
 
 @app.post("/capture-and-compare")
 async def capture_and_compare(image: str = Form(...)):
-    with open(os.path.join(SAVE_DIR, 'temp.jpg'), "wb") as file:
+    with open(os.path.join(SAVE_DIR, "temp.jpg"), "wb") as file:
         decoded_image = base64.b64decode(image)
         file.write(decoded_image)
 
-    face_id = rekognition.check_existed_face(os.path.join(SAVE_DIR, 'temp.jpg'))
+    face_id = rekognition.check_existed_face(os.path.join(SAVE_DIR, "temp.jpg"))
 
     valid_face_id = database_management.query_valid_booking("A101")
 
